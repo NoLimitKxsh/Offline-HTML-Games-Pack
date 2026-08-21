@@ -6,33 +6,79 @@
     <title>Arcade Dashboard</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0b0c10; color: #c5c6c7; font-family: 'Segoe UI', Roboto, sans-serif; padding: 30px; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto 50px auto; padding: 15px 30px; background: #1f2833; border-radius: 15px; border-bottom: 3px solid #45f3ff; }
-        .logo { font-size: 1.8rem; font-weight: 800; color: #45f3ff; letter-spacing: 2px; }
-        .nav-links a { color: #c5c6c7; text-decoration: none; margin-left: 20px; font-weight: 600; transition: 0.2s; }
-        .nav-links a:hover { color: #45f3ff; }
+        
+        /* Theme Variables - Changed dynamically by JavaScript */
+        :root {
+            --bg-main: #0b0c10;
+            --bg-card: #1f2833;
+            --bg-info: #151a22;
+            --text-main: #c5c6c7;
+            --text-light: #ffffff;
+            --accent: #45f3ff;
+            --accent-glow: rgba(69, 243, 255, 0.25);
+            --border-card: #2d3748;
+        }
+
+        body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe UI', Roboto, sans-serif; padding: 30px; transition: background 0.3s, color 0.3s; }
+        
+        /* Navbar Layout */
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto 50px auto; padding: 15px 30px; background: var(--bg-card); border-radius: 15px; border-bottom: 3px solid var(--accent); transition: background 0.3s, border-color 0.3s; }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; transition: color 0.3s; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a, .theme-dropbtn { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 600; background: none; border: none; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .nav-links a:hover, .theme-dropbtn:hover { color: var(--accent); }
+
+        /* Theme Selector Dropdown Menu */
+        .theme-dropdown { position: relative; display: inline-block; }
+        .theme-dropdown-content { display: none; position: absolute; right: 0; background-color: var(--bg-info); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid var(--border-card); z-index: 10; overflow: hidden; margin-top: 5px; }
+        .theme-dropdown-content button { color: var(--text-light); padding: 12px 16px; text-decoration: none; display: block; width: 100%; border: none; background: none; text-align: left; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .theme-dropdown-content button:hover { background-color: var(--bg-card); color: var(--accent); }
+        .show-menu { display: block; }
+
+        /* Search Bar styling */
         .search-container { max-width: 1300px; margin: 0 auto 30px auto; display: flex; gap: 15px; }
-        .search-bar { width: 100%; padding: 15px 25px; background: #1f2833; border: 2px solid #2d3748; border-radius: 12px; color: #fff; font-size: 1.1rem; outline: none; transition: 0.2s; }
-        .search-bar:focus { border-color: #45f3ff; box-shadow: 0 0 10px rgba(69, 243, 255, 0.2); }
+        .search-bar { width: 100%; padding: 15px 25px; background: var(--bg-card); border: 2px solid var(--border-card); border-radius: 12px; color: var(--text-light); font-size: 1.1rem; outline: none; transition: 0.2s; }
+        .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+        /* Dashboard Grid Layout */
         .container { max-width: 1300px; margin: 0 auto; }
         .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .grid-title { font-size: 2.2rem; color: #fff; font-weight: 700; letter-spacing: 1px; }
-        .game-count { background: #1f2833; padding: 8px 16px; border-radius: 20px; border: 1px solid #45f3ff; color: #45f3ff; font-weight: 600; }
+        .grid-title { font-size: 2.2rem; color: var(--text-light); font-weight: 700; letter-spacing: 1px; }
+        .game-count { background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--accent); color: var(--accent); font-weight: 600; transition: border-color 0.3s, color 0.3s; }
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .game-card { background: #1f2833; border-radius: 18px; overflow: hidden; display: block; text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1px solid #2d3748; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .game-card:hover { transform: translateY(-8px); border-color: #45f3ff; box-shadow: 0 12px 20px rgba(69, 243, 255, 0.25); }
+        
+        /* Interactive Game Cards */
+        .game-card { background: var(--bg-card); border-radius: 18px; overflow: hidden; display: block; text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1px solid var(--border-card); box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .game-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 12px 20px var(--accent-glow); }
+        
+        /* Visual Icon / Thumbnail Area */
         .game-thumbnail { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #fff; position: relative; }
-        .game-info { padding: 15px; background: #151a22; text-align: center; }
-        .game-name { color: #fff; font-size: 1.1rem; font-weight: 600; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Title Labels */
+        .game-info { padding: 15px; background: var(--bg-info); text-align: center; }
+        .game-name { color: var(--text-light); font-size: 1.1rem; font-weight: 600; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .status-message { grid-column: 1 / -1; text-align: center; padding: 40px; font-size: 1.2rem; color: #8f9cae; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <!-- Your brand new custom layout header name -->
         <div class="logo">🐐 NoLimitPxtel</div>
-        <div class="nav-links"><a href="#">Home</a><a href="#">Games</a><a href="#">Apps</a><a href="#">Settings</a></div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Games</a>
+            <a href="#">Apps</a>
+            <!-- Interactive Dropdown Settings Theme Menu -->
+            <div class="theme-dropdown">
+                <button onclick="toggleThemeMenu()" class="theme-dropbtn">⚙️ Settings</button>
+                <div id="themeMenu" class="theme-dropdown-content">
+                    <button onclick="setTheme('cyan')">🌐 Neon Blue</button>
+                    <button onclick="setTheme('purple')">🔮 Cyberpunk</button>
+                    <button onclick="setTheme('green')">📟 Matrix Green</button>
+                    <button onclick="setTheme('crimson')">🔺 Dark Crimson</button>
+                </div>
+            </div>
+        </div>
     </nav>
 
     <div class="search-container">
@@ -50,6 +96,54 @@
     </div>
 
     <script>
+        // Themes configuration definitions
+        const themes = {
+            cyan: { main: '#0b0c10', card: '#1f2833', info: '#151a22', text: '#c5c6c7', light: '#fff', accent: '#45f3ff', glow: 'rgba(69, 243, 255, 0.25)', border: '#2d3748' },
+            purple: { main: '#0d0814', card: '#1b1226', info: '#130b1c', text: '#b3a2c7', light: '#fff', accent: '#d645ff', glow: 'rgba(214, 69, 255, 0.25)', border: '#322245' },
+            green: { main: '#050a05', card: '#0f1f11', info: '#0a140b', text: '#a2c7a5', light: '#fff', accent: '#39ff14', glow: 'rgba(57, 255, 20, 0.25)', border: '#1b381f' },
+            crimson: { main: '#0f0505', card: '#240f0f', info: '#170909', text: '#c7a2a2', light: '#fff', accent: '#ff3333', glow: 'rgba(255, 51, 51, 0.25)', border: '#3d1c1c' }
+        };
+
+        // UI Dropdown Toggle Logic
+        function toggleThemeMenu() {
+            document.getElementById("themeMenu").classList.toggle("show-menu");
+        }
+
+        // Close dropdown if user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.theme-dropbtn')) {
+                const dropdowns = document.getElementsByClassName("theme-dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show-menu')) {
+                        openDropdown.classList.remove('show-menu');
+                    }
+                }
+            }
+        }
+
+        // Apply theme color parameters dynamically and save choice locally
+        function setTheme(themeKey) {
+            const selected = themes[themeKey] || themes.cyan;
+            const root = document.documentElement;
+            
+            root.style.setProperty('--bg-main', selected.main);
+            root.style.setProperty('--bg-card', selected.card);
+            root.style.setProperty('--bg-info', selected.info);
+            root.style.setProperty('--text-main', selected.text);
+            root.style.setProperty('--text-light', selected.light);
+            root.style.setProperty('--accent', selected.accent);
+            root.style.setProperty('--accent-glow', selected.glow);
+            root.style.setProperty('--border-card', selected.border);
+            
+            localStorage.setItem('arcadeUserTheme', themeKey);
+        }
+
+        // Initial Theme Loader Check
+        const savedTheme = localStorage.getItem('arcadeUserTheme') || 'cyan';
+        setTheme(savedTheme);
+
+        // Core Game Visual Setup
         const emojis = ["🎮", "🕹️", "⚡", "👾", "🚀", "🔥", "🏆", "🎲", "🎯", "💎", "🌟", "⚔️", "👑", "🔮", "💥"];
         const gradients = [
             "linear-gradient(135deg, #f35588, #05dfd7)", "linear-gradient(135deg, #790c8e, #b5179e)",
@@ -80,36 +174,33 @@
 
         function renderGames(gamesList) {
             const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = '';
+                    grid.innerHTML = '';
 
-            if (gamesList.length === 0) {
-                grid.innerHTML = `<div class="status-message">No matching games found.</div>`;
-                return;
-            }
-
-            gamesList.forEach((filename, index) => {
-                let cleanName = filename.replace('.html', '').replace(/-/g, ' ').replace(/_/g, ' ');
-                let grad = gradients[index % gradients.length];
-                let emoji = emojis[index % emojis.length];
-
-                const card = document.createElement('a');
-                card.href = filename;
-                card.className = 'game-card';
-                card.innerHTML = `
-                    <div class="game-thumbnail" style="background: ${grad}">${emoji}</div>
-                    <div class="game-info"><div class="game-name">${cleanName}</div></div>
-                `;
-                grid.appendChild(card);
-            });
+        if (gamesList.length === 0) {
+            grid.innerHTML = `<div class="status-message">No matching games found.</div>`;
+            return;
         }
 
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allGames.filter(name => name.toLowerCase().includes(searchTerm));
-            renderGames(filtered);
-        });
+        gamesList.forEach((filename, index) => {
+            let cleanName = filename.replace('.html', '').replace(/-/g, ' ').replace(/_/g, ' ');
+            let grad = gradients[index % gradients.length];
+            let emoji = emojis[index % emojis.length];
 
-        loadGames();
-    </script>
-</body>
-</html>
+            const card = document.createElement('a');
+            card.href = filename;
+            card.className = 'game-card';
+            card.innerHTML = `
+                <div class="game-thumbnail" style="background: ${grad}">${emoji}</div>
+                <div class="game-info"><div class="game-name">${cleanName}</div></div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    document.getElementById('searchBox').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allGames.filter(name => name.toLowerCase().includes(searchTerm));
+        renderGames(filtered);
+    });
+
+    loadGames();
