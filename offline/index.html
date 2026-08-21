@@ -30,7 +30,8 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">🎯 NO LIMIT</div>
+        <!-- Your brand new custom layout header name -->
+        <div class="logo">🐐 NoLimitPxtel</div>
         <div class="nav-links"><a href="#">Home</a><a href="#">Games</a><a href="#">Apps</a><a href="#">Settings</a></div>
     </nav>
 
@@ -64,7 +65,6 @@
             const countLabel = document.getElementById('countLabel');
 
             try {
-                // Reads the unblocked, local static file generated during build time
                 const response = await fetch('games-list.json');
                 const fileNames = await response.json();
 
@@ -97,7 +97,7 @@
                 card.className = 'game-card';
                 card.innerHTML = `
                     <div class="game-thumbnail" style="background: ${grad}">${emoji}</div>
-                    <div class="game-info><div class="game-name">${cleanName}</div></div>
+                    <div class="game-info"><div class="game-name">${cleanName}</div></div>
                 `;
                 grid.appendChild(card);
             });
