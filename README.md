@@ -2,7 +2,7 @@
 
 <p>A repo filled with 300 offline games that can each run on a single file. This is a good option if you are having internet connectivity issues, or you're at some place with restricted internet.</p>
 
-
+<p> I AM WORKING ON IT AS MUCH AS I CAN, I HAVE SCHOOL AND SOME OF THESE TEACHERS JUST NEED TO RETIRE ALREADY WITH HOW STRICT THEY ARE</p>
 **Usage:** Under the Code button, select Download ZIP. It may take a while to download. After, extract the zip by right clicking on it and selecting Extract All. Now you have the repo containing the games all in a folder. You can also clone the repository using git.
 
 
