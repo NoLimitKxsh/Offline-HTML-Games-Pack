@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kxsh's Dungeon</title>
+    <title>Arcade Dashboard</title>
     <style>
         :root {
             --accent: #45f3ff;
@@ -50,137 +50,10 @@
         .theme-swatch { height: 60px; border-radius: 12px; cursor: pointer; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.9rem; text-shadow: 0 1px 3px rgba(0,0,0,0.5); transition: 0.2s; }
         .theme-swatch:hover { transform: scale(1.05); }
         .theme-swatch.selected { border-color: #fff; }
-        .modal-close { display: block; margin-top: 10px; margin-left: auto; background: var(--accent); color: #0b0c10; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <!-- Your brand new custom layout header name -->
-    <button class="logo" data-view="games">🐐 NoLimitPxtel</button>
-        <div class="nav-links">
-            <a data-view="games" class="active">Home</a>
-            <a data-view="games">Games</a>
-            <a data-view="apps">Apps</a>
-            <a id="settingsLink">Settings</a>
-        </div>
-    </nav>
-
-    <div class="search-container">
-        <input type="text" id="searchBox" class="search-bar" placeholder="🔍 Search through all games...">
-    </div>
-
-    <div class="container">
-
-        <!-- GAMES VIEW -->
-        <div class="view active" id="gamesView">
-            <div class="grid-header">
-                <h2 class="grid-title">All Games</h2>
-                <div class="game-count" id="countLabel">Loading...</div>
-            </div>
-            <div class="games-grid" id="gamesGrid">
-                <div class="status-message">Loading arcade library...</div>
-            </div>
-        </div>
-
-        <!-- APPS VIEW -->
-        <div class="view" id="appsView">
-            <div class="grid-header">
-                <h2 class="grid-title">Apps</h2>
-            </div>
-            <div class="apps-grid">
-                <div class="app-card" id="youtubeBtn">
-                    <div class="app-thumbnail" style="background: linear-gradient(135deg, #ff4b2b, #ff416c);">📺</div>
-                    <div class="app-info"><div class="app-name">YouTube</div></div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- SETTINGS MODAL -->
-    <div class="modal-overlay" id="settingsModal">
-        <div class="modal-box">
-            <h3>🎨 Choose a Theme</h3>
-            <div class="theme-options">
-                <div class="theme-swatch" data-theme="teal" style="background:#45f3ff;">Teal</div>
-                <div class="theme-swatch" data-theme="purple" style="background:#a55eea;">Purple</div>
-                <div class="theme-swatch" data-theme="red" style="background:#ff4b5c;">Red</div>
-                <div class="theme-swatch" data-theme="blue" style="background:#339af0;">Blue</div>
-                <div class="theme-swatch" data-theme="green" style="background:#2ecc71;">Green</div>
-                <div class="theme-swatch" data-theme="orange" style="background:#ff9f43;">Orange</div>
-            </div>
-            <button class="modal-close" id="closeSettings">Close</button>
-        </div>
-    </div>
-
-    <script>
-        const emojis = ["🎮", "🕹️", "⚡", "👾", "🚀", "🔥", "🏆", "🎲", "🎯", "💎", "🌟", "⚔️", "👑", "🔮", "💥"];
-        const gradients = [
-            "linear-gradient(135deg, #f35588, #05dfd7)", "linear-gradient(135deg, #790c8e, #b5179e)",
-            "linear-gradient(135deg, #ff4b2b, #ff416c)", "linear-gradient(135deg, #11998e, #38ef7d)",
-            "linear-gradient(135deg, #ff9900, #ff5500)", "linear-gradient(135deg, #00c6ff, #0072ff)",
-            "linear-gradient(135deg, #7f00ff, #e100ff)", "linear-gradient(135deg, #3a1c71, #d76d77)"
-        ];
-
-        let allGames = [];
-
-        async function loadGames() {
-            const grid = document.getElementById('gamesGrid');
-            const countLabel = document.getElementById('countLabel');
-
-            try {
-                const response = await fetch('games-list.json');
-                const fileNames = await response.json();
-
-                allGames = fileNames;
-                countLabel.textContent = `${allGames.length} Games Available`;
-                renderGames(allGames);
-
-            } catch (error) {
-                console.error(error);
-                grid.innerHTML = `<div class="status-message" style="color: #ff4b2b;">❌ Error displaying the local game array.</div>`;
-            }
-        }
-
-        function renderGames(gamesList) {
-            const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = '';
-
-            if (gamesList.length === 0) {
-                grid.innerHTML = `<div class="status-message">No matching games found.</div>`;
-                return;
-            }
-
-            gamesList.forEach((filename, index) => {
-                let cleanName = filename.replace('.html', '').replace(/-/g, ' ').replace(/_/g, ' ');
-                let grad = gradients[index % gradients.length];
-                let emoji = emojis[index % emojis.length];
-
-                const card = document.createElement('a');
-                card.href = filename;
-                card.target = '_blank';
-                card.rel = 'noopener noreferrer';
-                card.className = 'game-card';
-                card.innerHTML = `
-                    <div class="game-thumbnail" style="background: ${grad}">${emoji}</div>
-                    <div class="game-info"><div class="game-name">${cleanName}</div></div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allGames.filter(name => name.toLowerCase().includes(searchTerm));
-            renderGames(filtered);
-        });
-
-        // ----- View switching (Home/Games/Apps) -----
-        const navLinks = document.querySelectorAll('.nav-links a[data-view], .logo[data-view]');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                const target = link.getAttribute('data-view');
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById(target + 'View').classList.add('active');
-                navLinks.forEach(l => l.classList.remove('active
+        .theme-swatch.custom { position: relative; }
+        .custom-theme { margin-top: 20px; padding-top: 20px; border-top: 1px solid #2d3748; }
+        .custom-theme label { display: block; color: #c5c6c7; font-size: 0.9rem; margin-bottom: 8px; }
+        .custom-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .custom-theme input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; background: none; }
+        .custom-theme input[type="text"] { width: 120px; padding: 8px; background: #151a22; border: 1px solid #2d3748; border-radius: 6px; color: #fff; font-family: monospace; font-size: 0.9rem; }
+        .custom
